@@ -15,8 +15,8 @@ function Home() {
         </span>
       </h1>
 
-      {!user && <CreateUser />}
-      {user && (
+      {!user.username && <CreateUser />}
+      {user.username && (
         <>
           <p className="mb-4 text-stone-600 md:text-lg">
             Welcome back, <span className="font-semibold">{user.username}</span>
