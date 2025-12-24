@@ -1,11 +1,12 @@
 import { useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Form, redirect, useActionData, useNavigation } from 'react-router-dom';
 import { createOrder } from '../../services/apiRestaurant';
 import Button from '../../ui/Button';
 import { getCart, clearCart, getTotalCartPrice } from '../cart/cartSlice';
 import store from '../../store';
 import { formatCurrency } from '../../utils/helpers';
+import { fetchAddress } from '../user/userSlice';
 
 // https://uibakery.io/regex-library/phone-number
 const isValidPhone = (str) =>
@@ -14,6 +15,7 @@ const isValidPhone = (str) =>
   );
 
 function CreateOrder() {
+  const dispatch = useDispatch();
   const navigation = useNavigation();
   const isSubmitting = navigation.state === 'submitting';
   const user = useSelector((state) => state.user);
@@ -28,6 +30,14 @@ function CreateOrder() {
   const cartTotal = useSelector(getTotalCartPrice);
   const priorityPrice = cartTotal * 0.2;
   const finalPrice = priority ? cartTotal + priorityPrice : cartTotal;
+
+  const handleGetLocation = async (e) => {
+    e.preventDefault();
+    const resultAction = await dispatch(fetchAddress());
+    if (fetchAddress.fulfilled.match(resultAction)) {
+      setUserAddress(resultAction.payload.address);
+    }
+  };
 
   return (
     <div className="px-4 py-6">
@@ -70,7 +80,7 @@ function CreateOrder() {
           </div>
         </div>
 
-        <div className="mb-5 flex flex-col gap-2 sm:flex-row sm:items-center">
+        <div className="relative mb-5 flex flex-col gap-2 sm:flex-row sm:items-center">
           <label className="sm:basis-40">Address</label>
           <div className="grow">
             <input
@@ -84,6 +94,11 @@ function CreateOrder() {
               }}
             />
           </div>
+          <span className="absolute right-1 z-50">
+            <Button type="small" onClick={handleGetLocation}>
+              Get Current Location
+            </Button>
+          </span>
         </div>
 
         <div className="mb-12 flex items-center gap-5">
