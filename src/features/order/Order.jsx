@@ -22,6 +22,7 @@ function Order() {
     orderPrice,
     estimatedDelivery,
     cart,
+    address,
   } = order;
 
   const deliveryIn = calcMinutesLeft(estimatedDelivery);
@@ -71,6 +72,9 @@ function Order() {
         )}
         <p className="font-bold">
           To pay on delivery: {formatCurrency(orderPrice + priorityPrice)}
+        </p>
+        <p className="text-sm font-medium text-stone-600">
+          Delivery Address: {address}
         </p>
       </div>
     </div>

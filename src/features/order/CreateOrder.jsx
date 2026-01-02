@@ -129,17 +129,16 @@ function CreateOrder() {
 }
 
 export async function action({ request }) {
-  console.log(request);
   const formData = await request.formData();
   const data = Object.fromEntries(formData);
-
-  console.log(data.priority);
 
   const order = {
     ...data,
     cart: JSON.parse(data.cart),
     priority: data.priority === 'on',
   };
+
+  console.log('Order to submit:', order);
 
   const errors = {};
   if (!isValidPhone(order.phone))
